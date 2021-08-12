@@ -7,6 +7,7 @@ export const CONTAINER_HEIGHT = SCREEN_HEIGHT - 60;
 export const CONTAINER_WIDTH = SCREEN_WIDTH - 60;
 export const DATE_STR_FORMAT = 'YYYY-MM-DD';
 export const availableNumberOfDays = [1, 3, 5, 7];
+export const WIDTH = SCREEN_WIDTH
 
 export const minutesToYDimension = (hoursInDisplay, minutes) => {
   const minutesInDisplay = 60 * hoursInDisplay;
@@ -16,6 +17,7 @@ export const minutesToYDimension = (hoursInDisplay, minutes) => {
 export const getTimeLabelHeight = (hoursInDisplay, minutesStep) => {
   const timeLabelsInDisplay = Math.ceil((hoursInDisplay * 60) / minutesStep);
   return CONTAINER_HEIGHT / timeLabelsInDisplay;
+  // return SCREEN_WIDTH/6
 };
 
 export const getFormattedDate = (date, format) => {

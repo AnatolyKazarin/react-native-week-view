@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { CONTAINER_WIDTH } from '../utils';
+import { WIDTH } from '../utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    width: CONTAINER_WIDTH,
+    width: WIDTH*7/8,
   },
 });
 

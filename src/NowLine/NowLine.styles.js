@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const circleSize = 8;
-const lineWidth = 1.5;
+const lineWidth = 1;
 
 const styles = StyleSheet.create({
   container: {
@@ -12,8 +12,8 @@ const styles = StyleSheet.create({
   circle: {
     position: 'absolute',
     top: -(circleSize + lineWidth) / 2,
-    left: 2,
-    borderRadius: circleSize,
+    left: -4,
+    borderRadius: 2,
     height: circleSize,
     width: circleSize,
   },

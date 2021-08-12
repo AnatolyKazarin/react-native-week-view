@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { CONTAINER_WIDTH, CONTENT_OFFSET } from '../utils';
+import { CONTAINER_WIDTH, CONTENT_OFFSET,  WIDTH} from '../utils';
 
 const GREY_COLOR = '#E9EDF0';
 
@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: CONTENT_OFFSET,
-    width: CONTAINER_WIDTH,
+    width: WIDTH*7/8,
   },
   timeRow: {
     flex: 0,

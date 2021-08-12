@@ -22,6 +22,7 @@ import {
   availableNumberOfDays,
   setLocale,
   CONTAINER_WIDTH,
+  WIDTH,
 } from '../utils';
 
 const MINUTES_IN_DAY = 60 * 24;
@@ -332,8 +333,8 @@ export default class WeekView extends Component {
   });
 
   getListItemLayout = (index) => ({
-    length: CONTAINER_WIDTH,
-    offset: CONTAINER_WIDTH * index,
+    length: WIDTH*7/8,
+    offset: WIDTH*7/8 * index,
     index,
   });
 
@@ -343,6 +344,7 @@ export default class WeekView extends Component {
       numberOfDays,
       headerStyle,
       headerTextStyle,
+      headerTextDateStyle,
       hourTextStyle,
       eventContainerStyle,
       TodayHeaderComponent,
@@ -398,6 +400,7 @@ export default class WeekView extends Component {
                   <Header
                     style={headerStyle}
                     textStyle={headerTextStyle}
+                    textDateStyle={headerTextDateStyle}
                     TodayComponent={TodayHeaderComponent}
                     formatDate={formatDateHeader}
                     initialDate={item}
@@ -486,6 +489,7 @@ WeekView.propTypes = {
   onGridLongPress: PropTypes.func,
   headerStyle: PropTypes.object,
   headerTextStyle: PropTypes.object,
+  headerTextDateStyle: PropTypes.object,
   hourTextStyle: PropTypes.object,
   eventContainerStyle: PropTypes.object,
   selectedDate: PropTypes.instanceOf(Date).isRequired,

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { minutesToYDimension, CONTENT_OFFSET } from '../utils';
+import { minutesToYDimension, CONTENT_OFFSET, WIDTH } from '../utils';
 import styles from './NowLine.styles';
 
 const UPDATE_EVERY_MILLISECONDS = 60 * 1000; // 1 minute
@@ -45,7 +45,7 @@ class NowLine extends React.Component {
   }
 
   render() {
-    const { color, width } = this.props;
+    const { color } = this.props;
 
     return (
       <Animated.View
@@ -55,7 +55,7 @@ class NowLine extends React.Component {
             top: this.initialTop,
             transform: [{ translateY: this.state.currentTranslateY }],
             borderColor: color,
-            width,
+            width: WIDTH/8
           },
         ]}
       >
@@ -73,13 +73,12 @@ class NowLine extends React.Component {
 }
 
 NowLine.propTypes = {
-  width: PropTypes.number.isRequired,
   hoursInDisplay: PropTypes.number.isRequired,
   color: PropTypes.string,
 };
 
 NowLine.defaultProps = {
-  color: '#e53935',
+  color: '#333333',
 };
 
 export default React.memo(NowLine);

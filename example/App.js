@@ -7,9 +7,16 @@
  */
 
 import React from 'react';
-import {SafeAreaView, StyleSheet, StatusBar, Alert} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  StatusBar,
+  Alert,
+  Text,
+  View,
+} from 'react-native';
 
-import WeekView, {createFixedWeekDate} from 'react-native-week-view';
+import WeekView, {createFixedWeekDate, addLocale} from 'react-native-week-view';
 
 const generateDates = (hours, minutes) => {
   const date = new Date();
@@ -61,8 +68,49 @@ const sampleFixedEvents = [
   },
 ];
 
+addLocale('ru', {
+  months: [
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
+  ],
+  monthsShort: [
+    'янв',
+    'фев',
+    'мар',
+    'апр',
+    'май',
+    'июн',
+    'июл',
+    'авг',
+    'сен',
+    'окт',
+    'ноя',
+    'дек',
+  ],
+  weekdays: [
+    'Воскресенье',
+    'Понедельник',
+    'Вторник',
+    'Среда',
+    'Четверг',
+    'Пятница',
+    'Суббота',
+  ],
+  weekdaysMin: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
+});
+
 // For debugging purposes
-const showFixedComponent = true;
+const showFixedComponent = false;
 
 class App extends React.Component {
   state = {
@@ -99,15 +147,23 @@ class App extends React.Component {
             onGridClick={this.onGridClick}
             headerStyle={styles.header}
             headerTextStyle={styles.headerText}
+            headerTextDateStyle={styles.headerTextDate}
             hourTextStyle={styles.hourText}
             eventContainerStyle={styles.eventContainer}
-            formatDateHeader={showFixedComponent ? 'ddd' : 'ddd DD'}
-            hoursInDisplay={12}
+            EventComponent={() => (
+              <View style={{}}>
+                <Text style={{color: '#333333'}}>Event</Text>
+              </View>
+            )}
+            formatDateHeader={showFixedComponent ? 'ddd' : 'dd D'}
+            hoursInDisplay={10}
             timeStep={60}
             startHour={8}
             fixedHorizontally={showFixedComponent}
-            showTitle={!showFixedComponent}
+            showTitle={false}
             showNowLine
+            formatTimeLabel={'HH:mm'}
+            locale={'ru'}
           />
         </SafeAreaView>
       </>
@@ -119,20 +175,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
+    marginTop: 30,
   },
   header: {
-    backgroundColor: '#4286f4',
     borderColor: '#fff',
+    borderBottomColor: '#EBEBEB',
+    borderBottomWidth: 1,
   },
   headerText: {
-    color: 'white',
+    color: '#9C9C9C',
+  },
+  headerTextDate: {
+    color: '#333333',
+    marginVertical: 8,
   },
   hourText: {
     color: 'black',
+    fontSize: 10,
   },
   eventContainer: {
-    borderWidth: 1,
-    borderColor: 'black',
+    borderRadius: 3,
+    backgroundColor: '#FEF5EE',
   },
 });
 

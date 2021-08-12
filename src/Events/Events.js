@@ -251,7 +251,7 @@ class Events extends PureComponent {
                   <NowLine
                     color={nowLineColor}
                     hoursInDisplay={hoursInDisplay}
-                    width={this.getEventItemWidth(false)}
+                    // width={this.getEventItemWidth(false)}
                   />
                 )}
                 {eventsInSection.map((item) => (
