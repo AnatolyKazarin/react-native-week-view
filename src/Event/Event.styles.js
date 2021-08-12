@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
   item: {
@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     flex: 1,
     overflow: 'hidden',
-    marginLeft: 2
+    marginLeft: 2,
   },
   description: {
     marginVertical: 8,
@@ -16,6 +16,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
   },
-});
+})
 
-export default styles;
+export default styles

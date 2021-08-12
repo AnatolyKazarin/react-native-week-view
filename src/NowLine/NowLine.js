@@ -1,51 +1,51 @@
-import React from 'react';
-import { View, Animated } from 'react-native';
-import PropTypes from 'prop-types';
+import React from 'react'
+import { View, Animated } from 'react-native'
+import PropTypes from 'prop-types'
 
-import { minutesToYDimension, CONTENT_OFFSET, WIDTH } from '../utils';
-import styles from './NowLine.styles';
+import { minutesToYDimension, CONTENT_OFFSET, WIDTH } from '../utils'
+import styles from './NowLine.styles'
 
-const UPDATE_EVERY_MILLISECONDS = 60 * 1000; // 1 minute
+const UPDATE_EVERY_MILLISECONDS = 60 * 1000 // 1 minute
 
 const getCurrentTop = (hoursInDisplay) => {
-  const now = new Date();
-  const minutes = now.getHours() * 60 + now.getMinutes();
-  return minutesToYDimension(hoursInDisplay, minutes) + CONTENT_OFFSET;
-};
+  const now = new Date()
+  const minutes = now.getHours() * 60 + now.getMinutes()
+  return minutesToYDimension(hoursInDisplay, minutes) + CONTENT_OFFSET
+}
 
 class NowLine extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.initialTop = getCurrentTop(this.props.hoursInDisplay);
+    this.initialTop = getCurrentTop(this.props.hoursInDisplay)
 
     this.state = {
       currentTranslateY: new Animated.Value(0),
-    };
+    }
 
-    this.intervalCallbackId = null;
+    this.intervalCallbackId = null
   }
 
   componentDidMount() {
     this.intervalCallbackId = setInterval(() => {
-      const newTop = getCurrentTop(this.props.hoursInDisplay);
+      const newTop = getCurrentTop(this.props.hoursInDisplay)
       Animated.timing(this.state.currentTranslateY, {
         toValue: newTop - this.initialTop,
         duration: 1000,
         useNativeDriver: true,
         isInteraction: false,
-      }).start();
-    }, UPDATE_EVERY_MILLISECONDS);
+      }).start()
+    }, UPDATE_EVERY_MILLISECONDS)
   }
 
   componentWillUnmount() {
     if (this.intervalCallbackId) {
-      clearInterval(this.intervalCallbackId);
+      clearInterval(this.intervalCallbackId)
     }
   }
 
   render() {
-    const { color } = this.props;
+    const { color } = this.props
 
     return (
       <Animated.View
@@ -55,10 +55,9 @@ class NowLine extends React.Component {
             top: this.initialTop,
             transform: [{ translateY: this.state.currentTranslateY }],
             borderColor: color,
-            width: WIDTH/8
+            width: WIDTH / 8,
           },
-        ]}
-      >
+        ]}>
         <View
           style={[
             styles.circle,
@@ -68,17 +67,17 @@ class NowLine extends React.Component {
           ]}
         />
       </Animated.View>
-    );
+    )
   }
 }
 
 NowLine.propTypes = {
   hoursInDisplay: PropTypes.number.isRequired,
   color: PropTypes.string,
-};
+}
 
 NowLine.defaultProps = {
   color: '#333333',
-};
+}
 
-export default React.memo(NowLine);
+export default React.memo(NowLine)
