@@ -363,6 +363,7 @@ export default class WeekView extends Component {
       fixedHorizontally,
       showNowLine,
       nowLineColor,
+      showClickedSlot,
     } = this.props
     const { currentMoment, initialDates } = this.state
     const times = this.calculateTimes(timeStep, formatTimeLabel)
@@ -445,6 +446,7 @@ export default class WeekView extends Component {
                     rightToLeft={rightToLeft}
                     showNowLine={showNowLine}
                     nowLineColor={nowLineColor}
+                    showClickedSlot={showClickedSlot}
                   />
                 )
               }}
@@ -505,6 +507,7 @@ WeekView.propTypes = {
   prependMostRecent: PropTypes.bool,
   showNowLine: PropTypes.bool,
   nowLineColor: PropTypes.string,
+  showClickedSlot: PropTypes.bool,
 }
 
 WeekView.defaultProps = {

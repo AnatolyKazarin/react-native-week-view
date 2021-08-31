@@ -15,6 +15,7 @@ import {
   minutesToYDimension,
   CONTENT_OFFSET,
   getTimeLabelHeight,
+  WIDTH,
 } from '../utils'
 
 import styles from './Events.styles'
@@ -32,6 +33,11 @@ const areEventsOverlapped = (event1EndDate, event2StartDate) => {
 }
 
 class Events extends PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = { dayIndex: null, hour: null, height: null }
+  }
+
   getStyleForEvent = (item) => {
     const { hoursInDisplay } = this.props
 
@@ -194,6 +200,8 @@ class Events extends PureComponent {
 
     const date = moment(initialDate).add(dayIndex, 'day').toDate()
 
+    this.setState({ dayIndex, hour })
+
     callback(event, hour, date)
   }
 
@@ -218,6 +226,7 @@ class Events extends PureComponent {
       timeStep,
       showNowLine,
       nowLineColor,
+      showClickedSlot,
     } = this.props
     const totalEvents = this.processEvents(
       eventsByDate,
@@ -225,6 +234,8 @@ class Events extends PureComponent {
       numberOfDays,
       rightToLeft,
     )
+
+    this.setState({ height: getTimeLabelHeight(hoursInDisplay, timeStep) })
 
     return (
       <View style={styles.container}>
@@ -266,6 +277,20 @@ class Events extends PureComponent {
               </View>
             </TouchableWithoutFeedback>
           ))}
+          {this.state.hour && this.state.dayIndex && showClickedSlot && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 1 + (this.state.dayIndex * WIDTH) / 8,
+                top: 17 + this.state.hour * this.state.height,
+                width: (WIDTH * 1) / 8 - 1,
+                height: this.state.height - 1,
+                borderWidth: 2,
+                borderColor: '#FE41C8',
+                borderRadius: 3,
+              }}
+            />
+          )}
         </View>
       </View>
     )
