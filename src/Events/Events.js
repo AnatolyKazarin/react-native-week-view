@@ -277,7 +277,7 @@ class Events extends PureComponent {
               </View>
             </TouchableWithoutFeedback>
           ))}
-          {this.state.hour && this.state.dayIndex && showClickedSlot && (
+          {!!this.state.hour && !!this.state.dayIndex && showClickedSlot && (
             <View
               style={{
                 position: 'absolute',
