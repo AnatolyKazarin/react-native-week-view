@@ -44,10 +44,13 @@ export default class WeekView extends Component {
       props.prependMostRecent,
       props.fixedHorizontally,
     )
+    console.log('Initial Dates', initialDates);
     this.state = {
       // currentMoment should always be the first date of the current page
       currentMoment: moment(initialDates[this.currentPageIndex]).toDate(),
       initialDates,
+      topSelectedIndex: -1,
+      bottomSelectedIndex: -1
     }
 
     setLocale(props.locale)
@@ -364,12 +367,18 @@ export default class WeekView extends Component {
       showNowLine,
       nowLineColor,
       showClickedSlot,
+      onTimeIntervalSelected
     } = this.props
     const { currentMoment, initialDates } = this.state
     const times = this.calculateTimes(timeStep, formatTimeLabel)
     const eventsByDate = this.sortEventsByDate(events)
     const horizontalInverted =
       (prependMostRecent && !rightToLeft) || (!prependMostRecent && rightToLeft)
+
+    const handleIntervalSelection = (startTime, endTime) => {
+      this.setState({topSelectedIndex: startTime, bottomSelectedIndex: endTime})
+      onTimeIntervalSelected(startTime, endTime)
+    }
 
     return (
       <View style={styles.container}>
@@ -419,6 +428,7 @@ export default class WeekView extends Component {
               textStyle={hourTextStyle}
               hoursInDisplay={hoursInDisplay}
               timeStep={timeStep}
+              interval={{start: this.state.topSelectedIndex, end: this.state.bottomSelectedIndex}}
             />
             <VirtualizedList
               data={initialDates}
@@ -447,6 +457,7 @@ export default class WeekView extends Component {
                     showNowLine={showNowLine}
                     nowLineColor={nowLineColor}
                     showClickedSlot={showClickedSlot}
+                    onTimeIntervalSelected={handleIntervalSelection}
                   />
                 )
               }}
@@ -488,6 +499,7 @@ WeekView.propTypes = {
   onEventLongPress: PropTypes.func,
   onGridClick: PropTypes.func,
   onGridLongPress: PropTypes.func,
+  onTimeIntervalSelected: PropTypes.func,
   headerStyle: PropTypes.object,
   headerTextStyle: PropTypes.object,
   headerTextDateStyle: PropTypes.object,

@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    width: (WIDTH * 7) / 8,
+    width: WIDTH*7/8,
   },
 })
 

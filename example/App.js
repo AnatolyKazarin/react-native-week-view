@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React from 'react'
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,18 +14,21 @@ import {
   Alert,
   Text,
   View,
-} from 'react-native';
+} from 'react-native'
 
-import WeekView, {createFixedWeekDate, addLocale} from 'react-native-week-view';
+import WeekView, {
+  createFixedWeekDate,
+  addLocale,
+} from 'react-native-week-view'
 
 const generateDates = (hours, minutes) => {
-  const date = new Date();
-  date.setHours(date.getHours() + hours);
+  const date = new Date()
+  date.setHours(date.getHours() + hours)
   if (minutes != null) {
-    date.setMinutes(minutes);
+    date.setMinutes(minutes)
   }
-  return date;
-};
+  return date
+}
 
 const sampleEvents = [
   {
@@ -49,7 +52,7 @@ const sampleEvents = [
     endDate: generateDates(-3),
     color: 'green',
   },
-];
+]
 
 const sampleFixedEvents = [
   {
@@ -66,7 +69,7 @@ const sampleFixedEvents = [
     endDate: createFixedWeekDate(3, 17, 30),
     color: 'red',
   },
-];
+]
 
 addLocale('ru', {
   months: [
@@ -107,38 +110,38 @@ addLocale('ru', {
     'Суббота',
   ],
   weekdaysMin: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
-});
+})
 
 // For debugging purposes
-const showFixedComponent = false;
+const showFixedComponent = false
 
 class App extends React.Component {
   state = {
     events: showFixedComponent ? sampleFixedEvents : sampleEvents,
     selectedDate: new Date(),
-  };
+  }
 
-  onEventPress = ({id, color, startDate, endDate}) => {
+  onEventPress = ({ id, color, startDate, endDate }) => {
     Alert.alert(
       `event ${color} - ${id}`,
       `start: ${startDate}\nend: ${endDate}`,
-    );
-  };
+    )
+  }
 
   onGridClick = (event, startHour, date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    Alert.alert(`Date: ${dateStr}\nStart hour: ${startHour}`);
-  };
+    const dateStr = date.toISOString().split('T')[0]
+    Alert.alert(`Date: ${dateStr}\nStart hour: ${startHour}`)
+  }
 
   render() {
-    const {events, selectedDate} = this.state;
+    const { events, selectedDate } = this.state
     return (
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.container}>
           <WeekView
-            ref={r => {
-              this.componentRef = r;
+            ref={(r) => {
+              this.componentRef = r
             }}
             events={events}
             selectedDate={selectedDate}
@@ -152,7 +155,7 @@ class App extends React.Component {
             eventContainerStyle={styles.eventContainer}
             EventComponent={() => (
               <View style={{}}>
-                <Text style={{color: '#333333'}}>Event</Text>
+                <Text style={{ color: '#333333' }}>Event</Text>
               </View>
             )}
             formatDateHeader={showFixedComponent ? 'ddd' : 'dd D'}
@@ -167,7 +170,7 @@ class App extends React.Component {
           />
         </SafeAreaView>
       </>
-    );
+    )
   }
 }
 
@@ -197,6 +200,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: '#FEF5EE',
   },
-});
+})
 
-export default App;
+export default App

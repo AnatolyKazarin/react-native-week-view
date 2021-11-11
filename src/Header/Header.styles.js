@@ -1,3 +1,4 @@
+import { WIDTH } from '@anatolyk/react-native-week-view/src/utils';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
   },
   headerContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
   }
 });
 

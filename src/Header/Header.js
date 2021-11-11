@@ -7,6 +7,7 @@ import {
   getFormattedDate,
   calculateDaysArray,
   availableNumberOfDays,
+  WIDTH,
 } from '../utils'
 import styles from './Header.styles'
 

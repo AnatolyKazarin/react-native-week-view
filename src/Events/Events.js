@@ -1,6 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { View, TouchableWithoutFeedback } from 'react-native'
+import {
+  View,
+  TouchableWithoutFeedback,
+  Animated,
+  PanResponder,
+  Vibration,
+  Text,
+} from 'react-native'
 import moment from 'moment'
 import memoizeOne from 'memoize-one'
 
@@ -32,10 +39,163 @@ const areEventsOverlapped = (event1EndDate, event2StartDate) => {
   return endDate.isSameOrAfter(event2StartDate)
 }
 
+const intervalIndexToTimeString = (index) =>
+  `${
+    Math.floor(index / 4) < 10
+      ? `0${Math.floor(index / 4)}`
+      : Math.floor(index / 4)
+  }:${
+    Math.floor((index * 15) % 60) < 10
+      ? `0${Math.floor((index * 15) % 60)}`
+      : Math.floor((index * 15) % 60)
+  }`
+
 class Events extends PureComponent {
   constructor(props) {
     super(props)
-    this.state = { dayIndex: null, hour: null, height: null }
+    this.offset = getTimeLabelHeight(
+      this.props.hoursInDisplay,
+      this.props.timeStep,
+    )
+    this.state = {
+      dayIndex: null,
+      hour: null,
+      topTimeIndex: -1,
+      bottomTimeIndex: -1,
+    }
+
+    this.height = React.createRef()
+    this.height.current = this.offset
+
+    this.heightAnim = new Animated.Value(this.height.current)
+
+    this.panTopButton = new Animated.ValueXY()
+    this.panBottomButton = new Animated.ValueXY()
+
+    this.topButtonPosition = new Animated.Value(-5)
+    this.bottomButtonPosition = new Animated.Value(this.offset - 8)
+
+    this.panTopButtonResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: (_, gestureState) => {
+        Vibration.vibrate(100)
+        this.panTopButton.setOffset({
+          x: this.panTopButton.x._value,
+          y: this.panTopButton.y._value,
+        })
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (this.heightAnim._value > this.offset / 4) {
+          this.state.bottomTimeIndex === -1
+            ? this.setState({
+                topTimeIndex: Math.round(
+                  (4 *
+                    (this.state.hour * this.offset +
+                      gestureState.dy -
+                      this.offset / 4 -
+                      this.height.current +
+                      this.offset)) /
+                    this.offset,
+                ),
+              })
+            : this.setState({
+                topTimeIndex: Math.floor(
+                  (4 *
+                    ((this.state.bottomTimeIndex * this.offset) / 4 +
+                      gestureState.dy -
+                      this.height.current)) /
+                    this.offset,
+                ),
+              })
+          this.panTopButton.setValue({
+            x: gestureState.dx,
+            y: gestureState.dy,
+          })
+          this.heightAnim.setValue(this.height.current - gestureState.dy)
+          this.bottomButtonPosition.setValue(
+            this.height.current - gestureState.dy - 8,
+          )
+        } else {
+          if (this.height.current - gestureState.dy > this.offset / 4)
+            this.heightAnim.setValue(this.height.current - gestureState.dy)
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        this.height.current = this.height.current - gestureState.dy
+        this.panTopButton.flattenOffset()
+        // this.props.onTimeIntervalSelected && this.props.onTimeIntervalSelected(this.state.topTimeIndex, this.state.bottomTimeIndex)
+      },
+      onPanResponderTerminationRequest: () => false,
+    })
+
+    this.panBottomButtonResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        Vibration.vibrate(100)
+        this.panBottomButton.setOffset({
+          x: this.panBottomButton.x._value,
+          y: this.panBottomButton.y._value,
+        })
+      },
+      onPanResponderMove: (_, gestureState) => {
+        console.log(
+          'PanResponseMove Bottom',
+          this.height.current,
+          this.state.topTimeIndex,
+        )
+        if (this.heightAnim._value > this.offset / 4) {
+          this.state.topTimeIndex === -1
+            ? this.setState({
+                bottomTimeIndex: Math.round(
+                  (4 *
+                    (this.offset * (this.state.hour + 1) +
+                      gestureState.dy -
+                      this.offset / 4)) /
+                    this.offset,
+                ),
+              })
+            : this.setState({
+                bottomTimeIndex: Math.floor(
+                  (4 *
+                    ((this.state.topTimeIndex * this.offset) / 4 +
+                      this.height.current +
+                      gestureState.dy)) /
+                    this.offset,
+                ),
+              })
+          this.panBottomButton.setValue({
+            x: gestureState.dx,
+            y: gestureState.dy,
+          })
+          this.heightAnim.setValue(this.height.current + gestureState.dy)
+          this.bottomButtonPosition.setValue(
+            this.height.current + gestureState.dy - 8,
+          )
+        } else {
+          if (this.height.current + gestureState.dy > this.offset / 4)
+            this.heightAnim.setValue(this.height.current + gestureState.dy)
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        this.height.current = this.height.current + gestureState.dy
+        this.panBottomButton.flattenOffset()
+        // this.props.onTimeIntervalSelected && this.props.onTimeIntervalSelected(this.state.topTimeIndex, this.state.bottomTimeIndex)
+      },
+      onPanResponderTerminationRequest: () => false,
+    })
+  }
+
+  componentDidUpdate = (_, prevState) => {
+    if (
+      prevState.topTimeIndex !== this.state.topTimeIndex ||
+      prevState.bottomTimeIndex !== this.state.bottomTimeIndex
+    ) {
+      this.props.onTimeIntervalSelected &&
+        this.props.onTimeIntervalSelected(
+          this.state.topTimeIndex,
+          this.state.bottomTimeIndex,
+        )
+    }
   }
 
   getStyleForEvent = (item) => {
@@ -200,7 +360,17 @@ class Events extends PureComponent {
 
     const date = moment(initialDate).add(dayIndex, 'day').toDate()
 
-    this.setState({ dayIndex, hour })
+    this.setState({
+      dayIndex,
+      hour,
+      topTimeIndex: 4 * hour,
+      bottomTimeIndex: 4 * (hour + 1),
+    })
+
+    this.heightAnim.setValue(this.offset)
+    this.bottomButtonPosition.setValue(this.offset - 8)
+    this.panTopButton.y.setValue(0)
+    this.height.current = this.offset
 
     callback(event, hour, date)
   }
@@ -234,8 +404,6 @@ class Events extends PureComponent {
       numberOfDays,
       rightToLeft,
     )
-
-    this.setState({ height: getTimeLabelHeight(hoursInDisplay, timeStep) })
 
     return (
       <View style={styles.container}>
@@ -278,18 +446,49 @@ class Events extends PureComponent {
             </TouchableWithoutFeedback>
           ))}
           {showClickedSlot && (
-            <View
-              style={{
-                position: 'absolute',
-                left: 1 + (this.state.dayIndex * WIDTH) / 8,
-                top: 17 + this.state.hour * this.state.height,
-                width: (WIDTH * 1) / 8 - 1,
-                height: this.state.height - 1,
-                borderWidth: 2,
-                borderColor: '#FE41C8',
-                borderRadius: 3,
-              }}
-            />
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <Animated.View
+                style={[
+                  {
+                    position: 'absolute',
+                    left: 1 + (this.state.dayIndex * WIDTH) / 8,
+                    top: 17 + this.state.hour * this.offset,
+                    width: (WIDTH * 1) / 8 - 1,
+                    borderWidth: 2,
+                    borderColor: '#FE41C8',
+                    borderRadius: 3,
+                    height: this.heightAnim,
+                    zIndex: 1000,
+                  },
+                  { transform: [{ translateY: this.panTopButton.y }] },
+                ]}>
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    top: this.topButtonPosition,
+                    left: 10,
+                    width: 12,
+                    height: 12,
+                    backgroundColor: '#FE41C8',
+                    borderRadius: 6,
+                    zIndex: 100000,
+                  }}
+                  {...this.panTopButtonResponder.panHandlers}
+                />
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    top: this.bottomButtonPosition,
+                    right: 10,
+                    width: 12,
+                    height: 12,
+                    backgroundColor: '#FE41C8',
+                    borderRadius: 6,
+                  }}
+                  {...this.panBottomButtonResponder.panHandlers}
+                />
+              </Animated.View>
+            </TouchableWithoutFeedback>
           )}
         </View>
       </View>
