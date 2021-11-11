@@ -455,8 +455,9 @@ class Events extends PureComponent {
                     top: 17 + this.state.hour * this.offset,
                     width: (WIDTH * 1) / 8 - 1,
                     borderWidth: 2,
-                    borderColor: '#FE41C8',
-                    borderRadius: 3,
+                    borderColor: '#DD6390',
+                    borderTopRightRadius: 10,
+                    borderBottomLeftRadius: 10,
                     height: this.heightAnim,
                     zIndex: 1000,
                   },
@@ -466,12 +467,15 @@ class Events extends PureComponent {
                   style={{
                     position: 'absolute',
                     top: this.topButtonPosition,
-                    left: 10,
-                    width: 12,
-                    height: 12,
-                    backgroundColor: '#FE41C8',
-                    borderRadius: 6,
+                    left: -7,
+                    top: -7,
+                    width: 14,
+                    height: 14,
+                    backgroundColor: '#DD6390',
                     zIndex: 100000,
+                    borderRadius: 6,
+                    borderColor: 'rgb(231, 173, 195)',
+                    borderWidth: 3,
                   }}
                   {...this.panTopButtonResponder.panHandlers}
                 />
@@ -479,11 +483,13 @@ class Events extends PureComponent {
                   style={{
                     position: 'absolute',
                     top: this.bottomButtonPosition,
-                    right: 10,
-                    width: 12,
-                    height: 12,
-                    backgroundColor: '#FE41C8',
+                    right: -7,
+                    width: 14,
+                    height: 14,
+                    backgroundColor: '#DD6390',
                     borderRadius: 6,
+                    borderColor: 'rgb(231, 173, 195)',
+                    borderWidth: 3,
                   }}
                   {...this.panBottomButtonResponder.panHandlers}
                 />
