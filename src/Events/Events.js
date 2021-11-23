@@ -6,7 +6,6 @@ import {
   Animated,
   PanResponder,
   Vibration,
-  Text,
 } from 'react-native'
 import moment from 'moment'
 import memoizeOne from 'memoize-one'
@@ -79,6 +78,7 @@ class Events extends PureComponent {
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: (_, gestureState) => {
         Vibration.vibrate(100)
+        this.props.setScrollEnabled()
         this.panTopButton.setOffset({
           x: this.panTopButton.x._value,
           y: this.panTopButton.y._value,
@@ -123,6 +123,7 @@ class Events extends PureComponent {
       onPanResponderRelease: (_, gestureState) => {
         this.height.current = this.height.current - gestureState.dy
         this.panTopButton.flattenOffset()
+        this.props.setScrollEnabled()
         // this.props.onTimeIntervalSelected && this.props.onTimeIntervalSelected(this.state.topTimeIndex, this.state.bottomTimeIndex)
       },
       onPanResponderTerminationRequest: () => false,
@@ -132,6 +133,7 @@ class Events extends PureComponent {
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         Vibration.vibrate(100)
+        this.props.setScrollEnabled()
         this.panBottomButton.setOffset({
           x: this.panBottomButton.x._value,
           y: this.panBottomButton.y._value,
@@ -179,6 +181,7 @@ class Events extends PureComponent {
       onPanResponderRelease: (_, gestureState) => {
         this.height.current = this.height.current + gestureState.dy
         this.panBottomButton.flattenOffset()
+        this.props.setScrollEnabled()
         // this.props.onTimeIntervalSelected && this.props.onTimeIntervalSelected(this.state.topTimeIndex, this.state.bottomTimeIndex)
       },
       onPanResponderTerminationRequest: () => false,
@@ -468,7 +471,6 @@ class Events extends PureComponent {
                     position: 'absolute',
                     top: this.topButtonPosition,
                     left: -7,
-                    top: -7,
                     width: 14,
                     height: 14,
                     backgroundColor: '#DD6390',
@@ -519,6 +521,7 @@ Events.propTypes = {
   rightToLeft: PropTypes.bool,
   showNowLine: PropTypes.bool,
   nowLineColor: PropTypes.string,
+  setScrollEnabled: PropTypes.func,
 }
 
 export default Events

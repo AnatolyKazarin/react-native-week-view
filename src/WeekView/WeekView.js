@@ -21,7 +21,6 @@ import {
   DATE_STR_FORMAT,
   availableNumberOfDays,
   setLocale,
-  CONTAINER_WIDTH,
   WIDTH,
 } from '../utils'
 
@@ -44,13 +43,13 @@ export default class WeekView extends Component {
       props.prependMostRecent,
       props.fixedHorizontally,
     )
-    console.log('Initial Dates', initialDates);
     this.state = {
       // currentMoment should always be the first date of the current page
       currentMoment: moment(initialDates[this.currentPageIndex]).toDate(),
       initialDates,
       topSelectedIndex: -1,
-      bottomSelectedIndex: -1
+      bottomSelectedIndex: -1,
+      scrollEnabled: true,
     }
 
     setLocale(props.locale)
@@ -367,17 +366,27 @@ export default class WeekView extends Component {
       showNowLine,
       nowLineColor,
       showClickedSlot,
-      onTimeIntervalSelected
+      onTimeIntervalSelected,
     } = this.props
-    const { currentMoment, initialDates } = this.state
+    const { currentMoment, initialDates, scrollEnabled } = this.state
     const times = this.calculateTimes(timeStep, formatTimeLabel)
     const eventsByDate = this.sortEventsByDate(events)
     const horizontalInverted =
       (prependMostRecent && !rightToLeft) || (!prependMostRecent && rightToLeft)
 
     const handleIntervalSelection = (startTime, endTime) => {
-      this.setState({topSelectedIndex: startTime, bottomSelectedIndex: endTime})
+      this.setState({
+        topSelectedIndex: startTime,
+        bottomSelectedIndex: endTime,
+      })
       onTimeIntervalSelected(startTime, endTime)
+    }
+
+    const handleScrollEnabled = () => {
+      this.setState((state) => ({
+        ...state,
+        scrollEnabled: !state.scrollEnabled,
+      }))
     }
 
     return (
@@ -421,14 +430,20 @@ export default class WeekView extends Component {
             }}
           />
         </View>
-        <ScrollView ref={this.verticalAgendaRef}>
+        <ScrollView
+          ref={this.verticalAgendaRef}
+          scrollEventThrottle={100}
+          scrollEnabled={scrollEnabled}>
           <View style={styles.scrollViewContent}>
             <Times
               times={times}
               textStyle={hourTextStyle}
               hoursInDisplay={hoursInDisplay}
               timeStep={timeStep}
-              interval={{start: this.state.topSelectedIndex, end: this.state.bottomSelectedIndex}}
+              interval={{
+                start: this.state.topSelectedIndex,
+                end: this.state.bottomSelectedIndex,
+              }}
             />
             <VirtualizedList
               data={initialDates}
@@ -437,7 +452,7 @@ export default class WeekView extends Component {
               getItemLayout={(_, index) => this.getListItemLayout(index)}
               keyExtractor={(item) => item}
               initialScrollIndex={this.pageOffset}
-              scrollEnabled={!fixedHorizontally}
+              scrollEnabled={!fixedHorizontally && scrollEnabled}
               renderItem={({ item }) => {
                 return (
                   <Events
@@ -458,6 +473,7 @@ export default class WeekView extends Component {
                     nowLineColor={nowLineColor}
                     showClickedSlot={showClickedSlot}
                     onTimeIntervalSelected={handleIntervalSelection}
+                    setScrollEnabled={handleScrollEnabled}
                   />
                 )
               }}
