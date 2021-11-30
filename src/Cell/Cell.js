@@ -14,10 +14,12 @@ export const Cell = React.memo(
     setScrollEnabled,
     dayIndex,
     hour,
-    onTimeIntervalSelected,
+    onTimeIntervalChanged,
+    onIntervalSelected,
   }) => {
     const [bottomTimeIndex, setBottomTimeIndex] = useState(4 * (hour + 1))
     const [topTimeIndex, setTopTimeIndex] = useState(4 * hour)
+    const [panReleased, setPanReleased] = useState(false)
 
     const offset = getTimeLabelHeight(hoursInDisplay, timeStep)
 
@@ -84,6 +86,7 @@ export const Cell = React.memo(
             height.current -= gestureState.dy
             panTopButton.flattenOffset()
             setScrollEnabled()
+            setPanReleased(!panReleased)
           },
           onPanResponderTerminationRequest: () => false,
         }),
@@ -138,6 +141,7 @@ export const Cell = React.memo(
             height.current += gestureState.dy
             panBottomButton.flattenOffset()
             setScrollEnabled()
+            setPanReleased(!panReleased)
           },
           onPanResponderTerminationRequest: () => false,
         }),
@@ -155,11 +159,16 @@ export const Cell = React.memo(
 
     useEffect(
       () =>
-        onTimeIntervalSelected &&
-        onTimeIntervalSelected(topTimeIndex, bottomTimeIndex),
-      [topTimeIndex, bottomTimeIndex, onTimeIntervalSelected],
+        onTimeIntervalChanged &&
+        onTimeIntervalChanged(topTimeIndex, bottomTimeIndex),
+      [topTimeIndex, bottomTimeIndex, onTimeIntervalChanged],
     )
 
+    useEffect(
+      () =>
+        onIntervalSelected && onIntervalSelected(topTimeIndex, bottomTimeIndex),
+      [panReleased, onIntervalSelected],
+    )
     return (
       <TouchableWithoutFeedback onPress={() => {}}>
         <Animated.View

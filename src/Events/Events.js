@@ -42,6 +42,7 @@ class Events extends Component {
     this.state = {
       dayIndex: null,
       hour: null,
+      showClickedSlot: false,
     }
 
     this.dayIndexRef = React.createRef(0)
@@ -224,6 +225,7 @@ class Events extends Component {
     this.setState({
       dayIndex,
       hour,
+      showClickedSlot: !this.state.showClickedSlot,
     })
 
     callback(event, hour, date)
@@ -250,7 +252,8 @@ class Events extends Component {
       timeStep,
       showNowLine,
       nowLineColor,
-      showClickedSlot,
+      onTimeIntervalChanged,
+      onIntervalSelected,
     } = this.props
     const totalEvents = this.processEvents(
       eventsByDate,
@@ -298,14 +301,15 @@ class Events extends Component {
               </View>
             </TouchableWithoutFeedback>
           ))}
-          {showClickedSlot && (
+          {this.state.showClickedSlot && (
             <Cell
               hoursInDisplay={hoursInDisplay}
               timeStep={timeStep}
               setScrollEnabled={this.props.setScrollEnabled}
               dayIndex={this.dayIndexRef.current}
               hour={this.hourRef.current}
-              onTimeIntervalSelected={this.props.onTimeIntervalSelected}
+              onTimeIntervalChanged={onTimeIntervalChanged}
+              onIntervalSelected={onIntervalSelected}
             />
           )}
         </View>
