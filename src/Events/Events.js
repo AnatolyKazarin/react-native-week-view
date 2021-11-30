@@ -49,7 +49,7 @@ class Events extends Component {
     this.hourRef = React.createRef(0)
   }
 
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
+  shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.showClickedSlot !== this.props.showClickedSlot ||
       nextState.dayIndex !== this.state.dayIndex ||
@@ -225,7 +225,7 @@ class Events extends Component {
     this.setState({
       dayIndex,
       hour,
-      showClickedSlot: !this.state.showClickedSlot,
+      showClickedSlot: true,
     })
 
     callback(event, hour, date)

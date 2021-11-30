@@ -365,7 +365,6 @@ export default class WeekView extends Component {
       fixedHorizontally,
       showNowLine,
       nowLineColor,
-      onTimeIntervalSelected,
       onIntervalSelected,
     } = this.props
     const { currentMoment, initialDates, scrollEnabled } = this.state
@@ -378,7 +377,6 @@ export default class WeekView extends Component {
       this.setState({
         topSelectedIndex: startTime,
         bottomSelectedIndex: endTime,
-        scrollEnabled: true,
       })
     }
 
@@ -515,7 +513,6 @@ WeekView.propTypes = {
   onEventLongPress: PropTypes.func,
   onGridClick: PropTypes.func,
   onGridLongPress: PropTypes.func,
-  onTimeIntervalSelected: PropTypes.func,
   headerStyle: PropTypes.object,
   headerTextStyle: PropTypes.object,
   headerTextDateStyle: PropTypes.object,
@@ -535,7 +532,6 @@ WeekView.propTypes = {
   prependMostRecent: PropTypes.bool,
   showNowLine: PropTypes.bool,
   nowLineColor: PropTypes.string,
-  showClickedSlot: PropTypes.bool,
   onIntervalSelected: PropTypes.func,
 }
 
