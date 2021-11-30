@@ -119,6 +119,9 @@ class App extends React.Component {
   state = {
     events: showFixedComponent ? sampleFixedEvents : sampleEvents,
     selectedDate: new Date(),
+    showClickedSlot: false,
+    start: -1,
+    end: -1
   }
 
   onEventPress = ({ id, color, startDate, endDate }) => {
@@ -130,7 +133,8 @@ class App extends React.Component {
 
   onGridClick = (event, startHour, date) => {
     const dateStr = date.toISOString().split('T')[0]
-    Alert.alert(`Date: ${dateStr}\nStart hour: ${startHour}`)
+    // Alert.alert(`Date: ${dateStr}\nStart hour: ${startHour}`)
+    this.setState({showClickedSlot: true})
   }
 
   render() {
@@ -167,6 +171,8 @@ class App extends React.Component {
             showNowLine
             formatTimeLabel={'HH:mm'}
             locale={'ru'}
+            onTimeIntervalSelected={(start, end) => this.setState({start, end})}
+            showClickedSlot={this.state.showClickedSlot}
           />
         </SafeAreaView>
       </>
